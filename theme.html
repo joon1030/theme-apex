@@ -56,10 +56,11 @@
 <header class="site-header">
     <h1 class="site-name"><a href="/">{{ site.name }}</a></h1>
     <p class="logo">
-        <a href="{{ site.twitter }}"><img class="avatar" src="{{ account.email|gravatar(96) }}" alt="{{ site.author }}" /></a>
+        <a href="{{ site.twitter }}"><img class="avatar" src="{{ site.avatar }}" alt="{{ site.author }}" /></a>
     </p>
 </header>
 <div role="navigation" id="nav">
+    <div class="bg-img" style="background-image: url('{{ site.cover_photo }}');"></div>
     <ul>
         <li><a href="/">Home</a></li>
         {% if pages %}
