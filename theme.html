@@ -53,8 +53,13 @@
 </head>
 <body>
 <!-- I see you like to look at source code :) Me too! -->
+<style>
+    .site_name{
+        font-color:#ccc;
+    }
+</style>
 <header class="site-header">
-    <h1 class="site-name"><a href="/" style="font-color:#ccc;">{{ site.name }}</a></h1>
+    <h1 class="site-name"><a href="/" class="site_name">{{ site.name }}</a></h1>
     <p class="logo">
         <a href="{{ site.twitter }}"><img class="avatar" src="{{ site.avatar }}" alt="{{ site.author }}" /></a>
     </p>
