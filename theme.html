@@ -1,67 +1,87 @@
 <!DOCTYPE html>
-<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
 <head>
-    <meta charset="utf-8" />
-    <title>{% if is_home %} {{ site.author }} {% elif is_post %} {{ post.title }} {% elif is_page %} {{ page.title }} {% endif %} | {{ site.name }}</title>
+    <meta charset="utf-8">
+    <title>
+        {% if is_login %}Login
+        {% elif is_home %}{{ site.author }}
+        {% elif is_tag %}{{ tag }}
+        {% elif post.type == 'post' %}{{ post.title }}
+        {% elif post.type == 'link' %}{{ link.title }}
+        {% elif post.type == 'page' %}{{ page.title }}
+        {% endif %}
+        | {{ site.name }}
+    </title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    {{ header_meta }}
 
-    <meta name="author" content="{{ site.author }}" />
-    <meta name="description" content="{{ site.bio }} - {{ site.author }}" />
-    <meta name="copyright" content="Copyright (c) 2013 {{ site.author }}" />
-    <meta name="classification" content="blog" />
-
-    {% if is_post %}
-    <!-- Open Graph meta tags for social sharing - http://ogp.me/ -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{ post.title }} | {{ site.name }}" />
-    <meta property="og:url" content="http://{{ site.domain }}{{ post.permalink }}" />
-    <meta property="og:image" content="{{ account.email|gravatar(128) }}" />
-    <meta property="og:description" content="{{ post.content|striptags|truncate(255)|e }}" />
-
-    <!-- Twitter Cards implementation for Twitter sharing - https://dev.twitter.com/docs/cards -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:site" content="@{{ site.twitter }}">
-    <meta name="twitter:creator" content="@{{ site.twitter }}">
-    <meta name="twitter:url" content="http://{{ site.domain }}{{ post.permalink }}">
-    <meta name="twitter:title" content="{{ post.title }} | {{ site.name }}">
-    <meta name="twitter:description" content=" {{ post.content|striptags|truncate(255)|e }}...">
-    <meta name="twitter:image" content="{{ account.email|gravatar(128) }}">
-    {% endif %}
-
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ site.atom_url }}" />
-
-    <!-- Favicons for all browsers and unfortunately IE8/9 -->
-    <link rel="icon" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-72.png" />
-    <!--[if IE]><link rel="shortcut icon" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/favicon.ico" /><![endif]-->
-    <link rel="apple-touch-icon" sizes="144x144" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="https://dl.dropbox.com/u/3408044/brandonbrown. /io/logo-144.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="https://dl.dropbox.com/u/3408044/brandonbrown.io //logo-144.png" />
-    <link rel="apple-touch-icon" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
-    <link rel="apple-touch-icon-precomposed" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
-
-    <!-- Because IE10 ignores conditionals and doesn't support PNG for favicons, we use start screen tile icons!
-         - http://www.jonathantneal.com/blog/understand-the-favicon/ -->
-    <meta name="msapplication-TileColor" content="#D83434" />
-    <meta name="msapplication-TileImage" content="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <link href="{{ static('themes/minimalist-flat/css/minimalist-flat.css') }}" rel="stylesheet" />
     <link href="http:///netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet" />
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300|Merriweather:300|Montserrat:400,700" rel="stylesheet" />
+    <link href="http://highlightjs.org/static/styles/github.css" rel="stylesheet" />
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+
+    <style>
+        body, h1 { font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif; color: black; }
+        p { padding: 8px 0; margin: 0; }
+        h6 { font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif; font-weight: 700; margin-top: 20px; font-size: 0.9em; }
+        div.main { top: 0; border-top-left-radius: 0; }
+        header.site-header, #nav { position: relative!important; }
+        header.site-header { margin-top: 18px; margin-bottom: 40px; }
+        #nav { top: 0; }
+        #nav.opened { position: absolute; margin-top: 0; top: 0; }
+        #nav li a:hover { background-color: #555; }
+        a [class^="icon-"], a [class*=" icon-"] { color: #12b0c5; }
+        div.social-btns a [class^="icon-"], a [class*=" icon-"] { margin: 0 0.6rem; }
+        h1.site-name { font-weight: 400; letter-spacing: -1px; font-size: 1.6em!important; }
+        h1.site-name a:hover { color: #12b0c5; }
+        h1 a { color: #555; }
+        h2 { font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif; font-weight: 400; letter-spacing: -2px; font-size: 2em; color: #ec663c; line-height:1.1; margin-bottom: 0; }
+        section .title a { color: #ec663c; }
+        div.content { font-family: 'Merriweather', Georgia, serif; font-size: 18px; }
+        .post-date { font-weight: 300; margin-top: 0; }
+        div.post-date { margin-top: -10px; }
+        footer.site-footer { font-weight: 300; border-top-color: #eee; font-size: 0.7em; }
+        footer.site-footer p { font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif; }
+        .socialbar-container, .dsq-brlink { font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; }
+        .hljs { background: transparent!important; padding: 0; }
+        pre { line-height: 1; }
+        code { font-size: 0.8em; line-height: 1.4; }
+        section.posts article.summary .content ul { padding: 0; margin-left: 2.625rem; }
+        section.posts article.summary .content ul li { list-style-type: disc; }
+        section.posts article.summary .content blockquote, blockquote { border-left: 5px solid #e5e5e5; padding: 8px; margin: 8px 0; }
+        section.posts article.summary .content blockquote p, blockquote p { font-size: 1em; margin: 0; padding: 0; padding-left: 10px; color: #555; line-height: 1.5; }
+    </style>
+
+    {% if site.analytics %}
+    <script>
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '{{ site.analytics }}']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    {% endif %}
 </head>
 <body>
-<!-- I see you like to look at source code :) Me too! -->
-<style>
-    a{
-        color:#ccc;
-    }
-</style>
+
+{% if is_login %}
+
+{{ login_form }}
+
+{% else %}
 <header class="site-header">
-    <h1 class="site-name"><a href="/" class="site_name">{{ site.name }}</a></h1>
+    <h1 class="site-name"><a href="/">{{ site.name }}</a></h1>
     <p class="logo">
-        <a href="{{ site.twitter }}"><img class="avatar" src="{{ site.avatar }}" alt="{{ site.author }}" /></a>
+        <a href="/"><img class="avatar" src="{{ site.avatar }}" alt="{{ site.author }}" /></a>
     </p>
 </header>
 <div role="navigation" id="nav">
@@ -72,17 +92,14 @@
         <li><a href="{{ page.permalink }}">{{ page.title }}</a></li>
         {% endfor %}
         {% endif %}
-        {% for tag in site.tags %}
-        <li><a href="/tag/{{ tag.name }}">{{ tag.name }}</a></li>
-        {% endfor %}
-        <a href="/tag/programming-in-scala" class="{{ set_active('/tag/programming-in-scala') }}">programming in scala</a>
     </ul>
 </div>
 <div class="social-btns">
     {% if site.twitter %}<a href="{{ site.twitter }}" title="Twitter" target="_blank" class="footer-icon"><i class="icon-twitter"></i></a>{% endif %}
     {% if site.facebook %}<a href="{{ site.facebook }}" title="Facebook" target="_blank" class="footer-icon"><i class="icon-facebook"></i></a>{% endif %}
-    {% if site.googleplus %}<a href="{{ site.googleplus }}?rel=author" rel="author" title="Google+" target="_blank" class="footer-icon"><i class="icon-google-plus"></i></a>{% endif %}
+    {% if site.googleplus %}<a href="{{ site.googleplus }}?rel=author?rel=author" rel="author" title="Google+" target="_blank" class="footer-icon"><i class="icon-google-plus"></i></a>{% endif %}
     {% if site.linkedin %}<a href="{{ site.linkedin }}" title="Linkedin" target="_blank" class="footer-icon"><i class="icon-linkedin"></i></a>{% endif %}
+    <a href="{{ site.atom_url }}" title="RSS" target="_blank"><i class="icon-rss"></i></a>
 </div>
 <div role="main" class="main">
     <div class="block">
@@ -90,37 +107,59 @@
     </div>
     <div class="content">
 
-        {% if is_home %}
+        {% if is_home or is_tag %}
         {% if posts %}
         <section class="posts">
+            {% if is_tag %}
+            <h2>Tag: {{ tag }}</h2>
+            <hr />
+            {% endif %}
             {% for post in posts %}
             <article itemscope itemtype="http://schema.org/Article" class="summary">
-                {% if post.type == 'link' %}
-                <h2 class="title"><a href="{{ post.url }}" target="_blank">{{ post.title }}</a></h2>
-                {% elif post.type == 'post' %}
                 <h2 class="title"><a href="{{ post.permalink }}">{{ post.title }}</a></h2>
-                {% endif %}
                 <div class="post-date">
-                    <p>Published by {{ site.author }} on {{ post.created_at|date_format }}</p>
+                    <p>Published by {{ site.author }} on {{ post.created_at|format_date }}</p>
                 </div>
-                {% if post.content|striptags|wordcount > 0 %}
-                <p class="desc">{{ post.content|striptags|truncate(500) }}</p>
+                <div class="content" data-type-cleanup="true">
+                    {{ post.content }}
+                </div>
+                {% if post.tags %}
+                <div class="tags">
+                    {{ post.tags|format_tags(delimiter=' ') }}
+                </div>
                 {% endif %}
-                <a href="{{ post.permalink }}">Read More</a>
             </article>
             {% endfor %}
         </section>
+        {% if not is_tag %}
+        <div class="pagination">
+            {% if pagination.prev %}<a href="{{ pagination.prev }}" class="post-prev">&larr; View Previous Posts</a>{% endif %}
+            {% if pagination.next %}<a href="{{ pagination.next }}" class="post-next">View More Posts &rarr;</a>{% endif %}
+        </div>
+        {% endif %}
         {% else %}
         <p class="no-posts"><em>No posts yet :(</em></p>
         {% endif %}
-        {% elif is_post %}
+
+        {% elif post.type == 'post' %}
+
         <article itemscope itemtype="http://schema.org/Article" class="post">
             <header class="title">
                 <h2>{{ post.title }}</h2>
-                <p class="post-date">Published by {{ site.author }} on {{ post.created_at|date_format }}</p>
+                <p class="post-date">Published by {{ site.author }} on {{ post.created_at|format_date }}</p>
             </header>
             <section class="content">
-                {{ post.content }}
+                <div class="post-content" data-type-cleanup="true">
+                    {{ post.content }}
+                </div>
+
+                {{ theme.social.bar }}
+
+                {% if post.tags %}
+                <div class="tags">
+                    {{ post.tags|format_tags(delimiter=' ') }}
+                </div>
+                {% endif %}
             </section>
             {% if site.disqus %}
             <hr />
@@ -139,37 +178,69 @@
             </section>
             {% endif %}
         </article>
-        {% elif is_page %}
+
+        {% elif post.type == 'link' %}
+
+        <article itemscope itemtype="http://schema.org/Article" class="post">
+            <header class="title">
+                <h2>{{ link.title }}</h2>
+                <p class="post-date">Published by {{ site.author }} on {{ link.created_at|format_date }}</p>
+            </header>
+            <section class="content">
+                {{ link.content }}
+                <span class="link-url"><i class="icon-share"></i> <a href="{{ link.url }}">{{ link.url }}</a></span>
+
+                {{ theme.social.bar }}
+
+                {% if link.tags %}
+                <div class="tags">
+                    {{ link.tags|format_tags(delimiter=' ') }}
+                </div>
+                {% endif %}
+            </section>
+            {% if site.disqus %}
+            <hr />
+            <section class="comments">
+                <div id="disqus_thread"></div>
+                <script type="text/javascript">
+                    var disqus_shortname = '{{ site.disqus }}';
+                    (function() {
+                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                    })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </section>
+            {% endif %}
+        </article>
+
+        {% elif post.type == 'page' %}
+
         <div class="post">
             <h1>{{ page.title }}</h1>
-            <hr />
-            {{ page.content }}
+            <div class="post-content" data-type-cleanup="true">
+                {{ page.content }}
+            </div>
         </div>
         {% endif %}
 
         <footer class="site-footer">
-            <p class="left">All rights Reserved &copy; <a href="mailto:joon1030@daum.net">{{ site.name }}</a></p>
+            <p class="left">All rights reserved &copy; <a href="/">{{ site.name }}</a></p>
             <p class="right">Powered by <a href="http://postach.io" target="_blank">Postach.io</a></p>
         </footer>
     </div>
 </div>
-<script src="/static/themes/minimalist-flat/js/responsive-nav.min.js"></script>
-<script src="/static/themes/minimalist-flat/js/hideAddressBar.js"></script>
-<script>responsiveNav("#nav", { customToggle: "#toggle" });</script>
 
-
-{% if site.analytics %}
-<script>
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '{{ site.analytics }}']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-</script>
 {% endif %}
+
+{{ footer_meta }}
+
+<script src="{{ static('themes/minimalist-flat/js/responsive-nav.min.js') }}"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>responsiveNav("#nav", { customToggle: "#toggle" });</script>
 
 </body>
 </html>
