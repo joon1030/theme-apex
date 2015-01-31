@@ -1,251 +1,169 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
-  <head>
-    <meta charset="utf-8">
-    <title>
-      {% if is_login %}Login
-      {% elif is_home %}{{ site.author }}
-      {% elif is_tag %}{{ tag }}
-      {% elif post %}{{ post.title }}
-      {% endif %}
-      | {{ site.name }}
-    </title>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="utf-8" />
+    <title>{% if is_home %} {{ site.author }} {% elif is_post %} {{ post.title }} {% elif is_page %} {{ page.title }} {% endif %} | {{ site.name }}</title>
 
-    {{ header_meta }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-    <link rel="stylesheet" type="text/css" href="{{ assets('css/style.css') }}">
+    <meta name="author" content="{{ site.author }}" />
+    <meta name="description" content="{{ site.bio }} - {{ site.author }}" />
+    <meta name="copyright" content="Copyright (c) 2013 {{ site.author }}" />
+    <meta name="classification" content="blog" />
 
-    <!--[if IE 7]>
-      <link href="http://postach.io/static/themes/_assets/fontawesome/css/font-awesome-ie7.min.css" rel="stylesheet">
-    <![endif]-->
+    {% if is_post %}
+    <!-- Open Graph meta tags for social sharing - http://ogp.me/ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ post.title }} | {{ site.name }}" />
+    <meta property="og:url" content="http://{{ site.domain }}{{ post.permalink }}" />
+    <meta property="og:image" content="{{ account.email|gravatar(128) }}" />
+    <meta property="og:description" content="{{ post.content|striptags|truncate(255)|e }}" />
 
-    <!--
-    <style>
-      /**
-       * Your custom override CSS goes here. If you wanted to override the default link colour and hover state, you would do this:
-       *
-       *  a {
-       *      color: #333; /* Override the default colour with a not-quite-black that is easy on the eyes on white screens */
-       *  }
-       *
-       *  a:hover {
-       *      color: #545454; /* This will now change the hover state as well */
-       *  }
-       *
-       *  You can put anything you want to override in here, so be creative!
-       */
-    </style>
-    -->
+    <!-- Twitter Cards implementation for Twitter sharing - https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@{{ site.twitter }}">
+    <meta name="twitter:creator" content="@{{ site.twitter }}">
+    <meta name="twitter:url" content="http://{{ site.domain }}{{ post.permalink }}">
+    <meta name="twitter:title" content="{{ post.title }} | {{ site.name }}">
+    <meta name="twitter:description" content=" {{ post.content|striptags|truncate(255)|e }}...">
+    <meta name="twitter:image" content="{{ account.email|gravatar(128) }}">
+    {% endif %}
 
-    {% if site.analytics %}
-    <script>
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ site.atom_url }}" />
+
+    <!-- Favicons for all browsers and unfortunately IE8/9 -->
+    <link rel="icon" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-72.png" />
+    <!--[if IE]><link rel="shortcut icon" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/favicon.ico" /><![endif]-->
+    <link rel="apple-touch-icon" sizes="144x144" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="https://dl.dropbox.com/u/3408044/brandonbrown. /io/logo-144.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="https://dl.dropbox.com/u/3408044/brandonbrown.io //logo-144.png" />
+    <link rel="apple-touch-icon" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
+    <link rel="apple-touch-icon-precomposed" href="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
+
+    <!-- Because IE10 ignores conditionals and doesn't support PNG for favicons, we use start screen tile icons!
+         - http://www.jonathantneal.com/blog/understand-the-favicon/ -->
+    <meta name="msapplication-TileColor" content="#D83434" />
+    <meta name="msapplication-TileImage" content="https://dl.dropbox.com/u/3408044/brandonbrown.io/logo-144.png" />
+
+    <link href="{{ static('themes/minimal-flat/css/minimalist-flat.css') }}" rel="stylesheet" />
+    <link href="http:///netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet" />
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+</head>
+<body>
+<!-- I see you like to look at source code :) Me too! -->
+<header class="site-header">
+    <h1 class="site-name"><a href="/">{{ site.name }}</a></h1>
+    <p class="logo">
+        <a href="{{ site.twitter }}"><img class="avatar" src="{{ account.email|gravatar(96) }}" alt="{{ site.author }}" /></a>
+    </p>
+</header>
+<div role="navigation" id="nav">
+    <ul>
+        <li><a href="/">Home</a></li>
+        {% if pages %}
+        {% for page in pages %}
+        <li><a href="{{ page.permalink }}">{{ page.title }}</a></li>
+        {% endfor %}
+        {% endif %}
+        {% for tag in site.tags %}
+        <li><a href="/tag/{{ tag.name }}">{{ tag.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="social-btns">
+    {% if site.twitter %}<a href="{{ site.twitter }}" title="Twitter" target="_blank" class="footer-icon"><i class="icon-twitter"></i></a>{% endif %}
+    {% if site.facebook %}<a href="{{ site.facebook }}" title="Facebook" target="_blank" class="footer-icon"><i class="icon-facebook"></i></a>{% endif %}
+    {% if site.googleplus %}<a href="{{ site.googleplus }}?rel=author" rel="author" title="Google+" target="_blank" class="footer-icon"><i class="icon-google-plus"></i></a>{% endif %}
+    {% if site.linkedin %}<a href="{{ site.linkedin }}" title="Linkedin" target="_blank" class="footer-icon"><i class="icon-linkedin"></i></a>{% endif %}
+</div>
+<div role="main" class="main">
+    <div class="block">
+        <a href="#nav" id="toggle" class="block" aria-hidden="true"></a>
+    </div>
+    <div class="content">
+
+        {% if is_home %}
+        {% if posts %}
+        <section class="posts">
+            {% for post in posts %}
+            <article itemscope itemtype="http://schema.org/Article" class="summary">
+                {% if post.type == 'link' %}
+                <h2 class="title"><a href="{{ post.url }}" target="_blank">{{ post.title }}</a></h2>
+                {% elif post.type == 'post' %}
+                <h2 class="title"><a href="{{ post.permalink }}">{{ post.title }}</a></h2>
+                {% endif %}
+                <div class="post-date">
+                    <p>Published by {{ site.author }} on {{ post.created_at|date_format }}</p>
+                </div>
+                {% if post.content|striptags|wordcount > 0 %}
+                <p class="desc">{{ post.content|striptags|truncate(500) }}</p>
+                {% endif %}
+                <a href="{{ post.permalink }}">Read More</a>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <p class="no-posts"><em>No posts yet :(</em></p>
+        {% endif %}
+        {% elif is_post %}
+        <article itemscope itemtype="http://schema.org/Article" class="post">
+            <header class="title">
+                <h2>{{ post.title }}</h2>
+                <p class="post-date">Published by {{ site.author }} on {{ post.created_at|date_format }}</p>
+            </header>
+            <section class="content">
+                {{ post.content }}
+            </section>
+            {% if site.disqus %}
+            <hr />
+            <section class="comments">
+                <div id="disqus_thread"></div>
+                <script type="text/javascript">
+                    var disqus_shortname = '{{ site.disqus }}';
+                    (function() {
+                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                    })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </section>
+            {% endif %}
+        </article>
+        {% elif is_page %}
+        <div class="post">
+            <h1>{{ page.title }}</h1>
+            <hr />
+            {{ page.content }}
+        </div>
+        {% endif %}
+
+        <footer class="site-footer">
+            <p class="left">All rights Reserved &copy; <a href="/">{{ site.name }}</a></p>
+            <p class="right">Powered by <a href="http://postach.io" target="_blank">Postach.io</a></p>
+        </footer>
+    </div>
+</div>
+
+<script src="{{ static('themes/minimal-flat/js/responsive-nav.min.js') }}"></script>
+<script src="{{ static('themes/minimal-flat/js/hideAddressBar.js') }}"></script>
+<script>responsiveNav("#nav", { customToggle: "#toggle" });</script>
+
+{% if site.analytics %}
+<script>
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', '{{ site.analytics }}']);
     _gaq.push(['_trackPageview']);
     (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
-    </script>
-    {% endif %}
-  </head>
-  <body>
+</script>
+{% endif %}
 
-    {% if is_login %}
-
-      {{ login_form }}
-
-    {% else  %}
-
-    <div class="row">
-      <div class="span4 header">
-        <div class="bg-img" style="background-image: url('{% if site.cover_photo %}{{ site.cover_photo }}{% else %}{{ assets('images/background.jpg') }}{% endif %}');"></div>
-        <div class="gradient"></div>
-        <div class="title">
-          <h1>{{ site.name }}</h1>
-          <ul class="social">
-            {% if site.twitter %}
-            <li>
-              <a href="{{ site.twitter }}" title="Twitter" target="_blank">
-                <i class="icon-twitter"></i> Twitter
-              </a>
-            </li>
-            {% endif %}
-
-            {% if site.facebook %}
-            <li>
-              <a href="{{ site.facebook }}" title="Facebook" target="_blank">
-                <i class="icon-facebook-sign"></i> Facebook
-              </a>
-            </li>
-            {% endif %}
-
-            {% if site.googleplus %}
-            <li>
-              <a href="{{ site.googleplus }}?rel=author" title="Google+" target="_blank">
-                <i class="icon-google-plus"></i> Google+
-              </a>
-            </li>
-            {% endif %}
-
-            {% if site.linkedin %}
-            <li>
-              <a href="{{ site.linkedin }}" title="LinkedIn" target="_blank">
-                <i class="icon-linkedin"></i> LinkedIn
-              </a>
-            </li>
-            {% endif %}
-            <li>
-              <a href="{{ site.atom_url }}" title="RSS" target="_blank">
-                <i class="icon-rss"></i> RSS
-              </a>
-            </li>
-          </ul>
-        </div>
-        <a class="logo" href="/">
-          <img class="avatar" src="{{ site.avatar }}" alt="{{ site.author }}" width="100%" height="100%" />
-        </a>
-        <div class="site-description">
-          <ul>
-          <li><a href="/">Blog</a></li>
-          {% if pages %}
-          {% for page in pages %}
-          <li><a href="{{ page.permalink }}" class="{{ set_active(page.permalink) }}">{{ page.title }}</a></li>
-          {% endfor %}
-          {% endif %}
-          {% for tag in site.tags %}
-          <li><a href="/tag/{{ tag.name }}">{{ tag.name }}</a></li>
-          {% endfor %}
-          </ul>
-        </div>
-
-
-      </div>
-    </div>
-
-    <div class="row wrapper">
-
-      <div class="span4 spacer"></div>
-
-      {% if is_home or is_tag %}
-
-      <div class="span6 offset1 posts">
-
-          {% if is_tag %}
-          <h4 class="sub-heading span6">Showing all posts tagged {{ tag }}:</h4>
-          {% endif %}
-
-          {% if posts %}
-          {% for post in posts %}
-          <div class="post span6">
-            <div class="row">
-              <div class="span6">
-                <h2><a href="{{ post.permalink }}">{{ post.title }}</a></h2>
-              </div>
-            </div>
-            <div class="post-body" data-type-cleanup="true">
-              {{ post.content }}
-            </div>
-            <div class="post-info">
-              <div class="info-left">
-                <p class="date">{{ post.created_at|format_date }}</p>
-              </div>
-              <div class="info-right">
-                <p class="read-more"><a href="{{ post.permalink }}">Read More &raquo;</a></p>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-          {% if not is_tag %}
-          <div class="pagination span6">
-            {% if pagination.prev %}<a href="{{ pagination.prev }}" class="post-prev">&larr; View Previous Posts</a>{% endif %}
-            {% if pagination.next %}<a href="{{ pagination.next }}" class="post-next">View More Posts &rarr;</a>{% endif %}
-          </div>
-          {% endif %}
-          {% else %}
-          <h4 class="sub-heading span6">No Posts Yet :(</h4>
-          {% endif %}
-      </div>
-
-      {% elif post %}
-
-      <div class="span6 offset1 posts">
-        <div class="post whole span6">
-          <h1>{{ post.title }}</h1>
-          <div class="post-info">
-            <div class="info-left">
-              <p class="date">{{ post.created_at|format_date }}</p>
-            </div>
-            <div class="info-right">
-              <p class="comments">
-                <a href="/"><i class="icon-comment"></i> 0</a>
-              </p>
-            </div>
-          </div>
-          <div class="post-body">
-            <div class="post-content" data-type-cleanup="true">
-              {{ post.content }}
-            </div>
-
-            {% if post.type == 'link' %}
-            <p><a href="{{ post.url }}"><i class="icon-share"></i> {{ post.url }}</a></p>
-            {% endif %}
-
-            {{ theme.social.bar }}
-
-            {% if post.tags %}
-            <ul class="post-tags">
-            {% for tag in post.tags %}
-              <li><a href="/tag/{{ tag }}">{{ tag|format_tag(link=False, humanize=True) }}</a></li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-          </div>
-          <div class="post-footer">
-            <p class="back"><a href="/">&laquo; Go Back</a></p>
-          </div>
-          {% if site.disqus %}
-          <div class="post-comments">
-            <div id="disqus_thread"></div>
-            <script>
-              var disqus_shortname = '{{ site.disqus }}';
-              var disqus_url = '{{site.base_url}}{{ post.permalink }}';
-              (function() {
-                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-              })();
-            </script>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-
-    {% elif post.type == 'page' %}
-
-      <div class="span6 offset1 posts">
-        <div class="post whole span6">
-          <h1>{{ page.title }}</h1>
-          <div class="post-body" data-type-cleanup="true">
-            {{ page.content }}
-          </div>
-          <div class="post-footer">
-            <p class="back"><a href="/">&laquo; Go Back</a></p>
-          </div>
-        </div>
-      </div>
-
-    {% endif %}
-
-    </div>
-
-    {% endif %}
-
-    {{ footer_meta }}
-
-    <!-- bootstrap -->
-    <script src="http://postach.io/static/themes/_assets/bootstrap/js/bootstrap.min.js" /></script>
-    
-  </body>
+</body>
 </html>
